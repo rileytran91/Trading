@@ -1,0 +1,97 @@
+data:
+  start_date: "2020-01-01"
+  end_date: "2026-03-24"
+  base_symbol: "BTC/USDT"
+  altcoins:
+    - "ETH/USDT"
+    - "BNB/USDT"
+    - "SOL/USDT"
+    - "ADA/USDT"
+    - "XRP/USDT"
+    - "DOT/USDT"
+    - "AVAX/USDT"
+    - "MATIC/USDT"
+    - "LINK/USDT"
+    - "UNI/USDT"
+  cache_dir: "~/.cache/capitalflow"
+  exchange: "binance"
+  timeframe: "1d"
+
+layers:
+  weights: [0.35, 0.25, 0.25, 0.15]
+
+  layer1:
+    stablecoin_supply:
+      weight: 0.25
+      lookback: 30
+    btc_dominance:
+      weight: 0.25
+      lookback: 14
+    total_mcap_momentum:
+      weight: 0.25
+      lookback: 20
+    dxy_correlation:
+      weight: 0.25
+      lookback: 30
+
+  layer2:
+    volume_profile:
+      weight: 0.30
+      lookback: 20
+    open_interest_proxy:
+      weight: 0.25
+      lookback: 14
+    funding_rate_proxy:
+      weight: 0.25
+      lookback: 30
+    exchange_reserve:
+      weight: 0.20
+      lookback: 14
+
+  layer3:
+    rsi:
+      weight: 0.20
+      periods: [14, 21]
+    macd:
+      weight: 0.20
+      fast: 12
+      slow: 26
+      signal: 9
+    ema_ribbon:
+      weight: 0.20
+      periods: [8, 21, 55, 100, 200]
+    obv:
+      weight: 0.20
+      lookback: 20
+    cmf:
+      weight: 0.20
+      period: 20
+
+  layer4:
+    fear_greed_proxy:
+      weight: 0.35
+      lookback: 30
+    volatility_regime:
+      weight: 0.35
+      atr_period: 14
+      percentile_window: 252
+    market_breadth:
+      weight: 0.30
+      ma_period: 50
+
+signals:
+  strong_threshold: 0.6
+  medium_threshold: 0.3
+  weak_threshold: 0.1
+  regime_transition_days: 5
+
+backtest:
+  walk_forward:
+    train_days: 365
+    test_days: 90
+    step_days: 90
+  initial_capital: 100000
+  commission_pct: 0.001
+  slippage_pct: 0.0005
+  entry_threshold: 0.3
+  exit_threshold: 0.1
